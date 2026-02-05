@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Cache
+skills/claude-code-updates/cache/
+
+# Bun
+bun.lockb
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+*.tsbuildinfo

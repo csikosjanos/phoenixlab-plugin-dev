@@ -1,0 +1,17 @@
+{
+  "name": "phoenixlab-plugin-dev",
+  "version": "0.1.0",
+  "description": "Companion plugin for plugin-dev with auto-updating docs and custom rules",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "bun test",
+    "update-docs": "bun run scripts/update-docs.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
