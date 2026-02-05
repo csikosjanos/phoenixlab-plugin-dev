@@ -107,11 +107,6 @@ export class HookReferenceGenerator {
     lines.push("- **PermissionRequest**: Exit 2 denies the permission");
     lines.push("- **UserPromptSubmit**: Exit 2 rejects the prompt");
     lines.push("- **Stop**: Exit 2 prevents Claude from stopping");
-    lines.push("");
-    lines.push("## See Also");
-    lines.push("");
-    lines.push("- [Matcher Patterns](./matcher-patterns.md)");
-    lines.push("- [Input/Output Schemas](./input-output-schemas.md)");
 
     return lines.join("\n");
   }

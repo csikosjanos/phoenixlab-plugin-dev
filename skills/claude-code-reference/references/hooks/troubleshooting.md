@@ -2,6 +2,13 @@
 
 Common hook issues and solutions.
 
+| Issue | Common Causes |
+|-------|---------------|
+| Hook not firing | Incorrect matcher, wrong event type, non-interactive mode |
+| Error in output | Script not executable, path issues, missing dependencies |
+| JSON validation failed | Shell profile printing text before JSON |
+| Stop hook runs forever | Missing `stop_hook_active` check |
+
 ## Hook Not Firing
 
 - Run `/hooks` to confirm the hook is registered

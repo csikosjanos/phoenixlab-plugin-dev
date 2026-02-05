@@ -4,21 +4,22 @@
  * This is a thin wrapper that orchestrates the services.
  */
 
-import { DocsFetcher } from "../src/services/docs-fetcher.ts";
-import { DocsParser } from "../src/services/docs-parser.ts";
-import { CacheManager } from "../src/services/cache-manager.ts";
-import { ReferenceManager } from "../src/services/reference-manager.ts";
+import { DocsFetcher } from "../../../src/services/docs-fetcher.ts";
+import { DocsParser } from "../../../src/services/docs-parser.ts";
+import { CacheManager } from "../../../src/services/cache-manager.ts";
+import { ReferenceManager } from "../../../src/services/reference-manager.ts";
 import {
   ReferenceGeneratorOrchestrator,
   ALL_CATEGORIES,
   type GeneratorCategory,
-} from "../src/services/reference-generators/index.ts";
+} from "../../../src/services/reference-generators/index.ts";
 import { dirname, join } from "node:path";
 
-// Determine plugin root directory
-const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || dirname(dirname(import.meta.path));
-const cacheDir = join(pluginRoot, "skills", "claude-code-updates", "cache");
-const referencesDir = join(pluginRoot, "skills", "claude-code-updates", "references");
+// Determine plugin root directory (3 levels up: scripts -> claude-code-reference -> skills -> root)
+const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || dirname(dirname(dirname(dirname(import.meta.path))));
+const skillDir = dirname(dirname(import.meta.path));
+const cacheDir = join(skillDir, "cache");
+const referencesDir = join(skillDir, "references");
 
 // Parse arguments
 const args = process.argv.slice(2);

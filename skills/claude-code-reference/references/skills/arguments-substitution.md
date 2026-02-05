@@ -2,6 +2,12 @@
 
 Pass arguments to skills with substitution variables.
 
+| Variable | Description |
+|----------|-------------|
+| `$ARGUMENTS` | Full argument string passed to skill |
+| `<required>` | Convention for required argument in `arguments` field |
+| `[optional]` | Convention for optional argument in `arguments` field |
+
 ## Arguments Field
 
 Document expected arguments:

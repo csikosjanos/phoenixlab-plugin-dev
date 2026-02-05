@@ -543,10 +543,6 @@ Brief one-line description of what this covers.
   "value": 42
 }
 \`\`\`
-
-## See Also
-
-- [Related Topic](./related-topic.md)
 ```
 
 ### Generator Architecture
@@ -669,7 +665,6 @@ When creating reference documentation:
 - [ ] File size is under 3KB (ideally 1-2KB)
 - [ ] File is understandable without reading other files
 - [ ] Includes 1-2 practical examples
-- [ ] Has "See Also" links to related topics
 - [ ] Generator has tests (TDD)
 - [ ] `generateFromContent()` allows testing without fetching
 

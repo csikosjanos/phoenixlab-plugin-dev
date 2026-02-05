@@ -1,0 +1,88 @@
+{
+  "releases": [
+    {
+      "version": "v2.1.31",
+      "name": "v2.1.31",
+      "publishedAt": "2026-02-04T00:44:13.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.31",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Added session resume hint on exit, showing how to continue your conversation later\n- Added support for full-width (zenkaku) space input from Japanese IME in checkbox selection\n- Fixed PDF too large errors permanently locking up sessions, requiring users to start a new conversation\n- Fixed bash commands incorrectly reporting failure with \"Read-only file system\" errors when sandbox mode was enabled\n- Fixed a crash that made sessions unusable after entering plan mode when project config in `~/.claude.json` was missing default fields\n- Fixed `temperatureOverride` being silently ignored in the streaming API path, causing all streaming requests to use the default temperature (1) regardless of the configured override\n- Fixed LSP shutdown/exit compatibility with strict language servers that reject null params\n- Improved system prompts to more clearly guide the model toward using dedicated tools (Read, Edit, Glob, Grep) instead of bash equivalents (`cat`, `sed`, `grep`, `find`), reducing unnecessary bash command usage\n- Improved PDF and request size error messages to show actual limits (100 pages, 20MB)\n- Reduced layout jitter in the terminal when the spinner appears and disappears during streaming\n- Removed misleading Anthropic API pricing from model selector for third-party provider (Bedrock, Vertex, Foundry) users\n"
+    },
+    {
+      "version": "v2.1.30",
+      "name": "v2.1.30",
+      "publishedAt": "2026-02-03T18:05:59.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.30",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Added `pages` parameter to the Read tool for PDFs, allowing specific page ranges to be read (e.g., `pages: \"1-5\"`). Large PDFs (>10 pages) now return a lightweight reference when `@` mentioned instead of being inlined into context.\n- Added pre-configured OAuth client credentials for MCP servers that don't support Dynamic Client Registration (e.g., Slack). Use `--client-id` and `--client-secret` with `claude mcp add`.\n- Added `/debug` for Claude to help troubleshoot the current session\n- Added support for additional `git log` and `git show` flags in read-only mode (e.g., `--topo-order`, `--cherry-pick`, `--format`, `--raw`)\n- Added token count, tool uses, and duration metrics to Task tool results\n- Added reduced motion mode to the config\n- Fixed phantom \"(no content)\" text blocks appearing in API conversation history, reducing token waste and potential model confusion\n- Fixed prompt cache not correctly invalidating when tool descriptions or input schemas changed, only when tool names changed\n- Fixed 400 errors that could occur after running `/login` when the conversation contained thinking blocks\n- Fixed a hang when resuming sessions with corrupted transcript files containing `parentUuid` cycles\n- Fixed rate limit message showing incorrect \"/upgrade\" suggestion for Max 20x users when extra-usage is unavailable\n- Fixed permission dialogs stealing focus while actively typing\n- Fixed subagents not being able to access SDK-provided MCP tools because they were not synced to the shared application state\n- Fixed a regression where Windows users with a `.bashrc` file could not run bash commands\n- Improved memory usage for `--resume` (68% reduction for users with many sessions) by replacing the session index with lightweight stat-based loading and progressive enrichment\n- Improved `TaskStop` tool to display the stopped command/task description in the result line instead of a generic \"Task stopped\" message\n- Changed `/model` to execute immediately instead of being queued\n- [VSCode] Added multiline input support to the \"Other\" text input in question dialogs (use Shift+Enter for new lines)\n- [VSCode] Fixed duplicate sessions appearing in the session list when starting a new conversation\n"
+    },
+    {
+      "version": "v2.1.29",
+      "name": "v2.1.29",
+      "publishedAt": "2026-01-31T23:37:51.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.29",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Fixed startup performance issues when resuming sessions that have `saved_hook_context`\n"
+    },
+    {
+      "version": "v2.1.27",
+      "name": "v2.1.27",
+      "publishedAt": "2026-01-30T20:38:53.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.27",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Added tool call failures and denials to debug logs\n- Fixed context management validation error for gateway users, ensuring `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` avoids the error\n- Added `--from-pr` flag to resume sessions linked to a specific GitHub PR number or URL\n- Sessions are now automatically linked to PRs when created via `gh pr create`\n- Fixed /context command not displaying colored output\n- Fixed status bar duplicating background task indicator when PR status was shown\n- VSCode: Enabled Claude in Chrome integration\n- Permissions now respect content-level `ask` over tool-level `allow`. Previously `allow: [\"Bash\"], ask: [\"Bash(rm *)\"]` allowed all bash commands, but will now permission prompt for `rm`.\n- Windows: Fixed bash command execution failing for users with `.bashrc` files\n- Windows: Fixed console windows flashing when spawning child processes\n- VSCode: Fixed OAuth token expiration causing 401 errors after extended sessions\n"
+    },
+    {
+      "version": "v2.1.25",
+      "name": "v2.1.25",
+      "publishedAt": "2026-01-29T21:13:33.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.25",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Fixed beta header validation error for gateway users on Bedrock and Vertex, ensuring `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` avoids the error\n"
+    },
+    {
+      "version": "v2.1.23",
+      "name": "v2.1.23",
+      "publishedAt": "2026-01-29T01:09:51.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.23",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Added customizable spinner verbs setting (`spinnerVerbs`)\n- Fixed mTLS and proxy connectivity for users behind corporate proxies or using client certificates\n- Fixed per-user temp directory isolation to prevent permission conflicts on shared systems\n- Fixed a race condition that could cause 400 errors when prompt caching scope was enabled\n- Fixed pending async hooks not being cancelled when headless streaming sessions ended\n- Fixed tab completion not updating the input field when accepting a suggestion\n- Fixed ripgrep search timeouts silently returning empty results instead of reporting errors\n- Improved terminal rendering performance with optimized screen data layout\n- Changed Bash commands to show timeout duration alongside elapsed time\n- Changed merged pull requests to show a purple status indicator in the prompt footer\n- [IDE] Fixed model options displaying incorrect region strings for Bedrock users in headless mode\n"
+    },
+    {
+      "version": "v2.1.22",
+      "name": "v2.1.22",
+      "publishedAt": "2026-01-28T06:59:58.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.22",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Fixed structured outputs for non-interactive (-p) mode\n"
+    },
+    {
+      "version": "v2.1.21",
+      "name": "v2.1.21",
+      "publishedAt": "2026-01-28T02:25:23.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.21",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Added support for full-width (zenkaku) number input from Japanese IME in option selection prompts\n- Fixed shell completion cache files being truncated on exit\n- Fixed API errors when resuming sessions that were interrupted during tool execution\n- Fixed auto-compact triggering too early on models with large output token limits\n- Fixed task IDs potentially being reused after deletion\n- Fixed file search not working in VS Code extension on Windows\n- Improved read/search progress indicators to show \"Reading…\" while in progress and \"Read\" when complete\n- Improved Claude to prefer file operation tools (Read, Edit, Write) over bash equivalents (cat, sed, awk)\n- [VSCode] Added automatic Python virtual environment activation, ensuring `python` and `pip` commands use the correct interpreter (configurable via `claudeCode.usePythonEnvironment` setting)\n- [VSCode] Fixed message action buttons having incorrect background colors\n"
+    },
+    {
+      "version": "v2.1.20",
+      "name": "v2.1.20",
+      "publishedAt": "2026-01-27T01:35:35.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.20",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Added arrow key history navigation in vim normal mode when cursor cannot move further\n- Added external editor shortcut (Ctrl+G) to the help menu for better discoverability\n- Added PR review status indicator to the prompt footer, showing the current branch's PR state (approved, changes requested, pending, or draft) as a colored dot with a clickable link\n- Added support for loading `CLAUDE.md` files from additional directories specified via `--add-dir` flag (requires setting `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1`)\n- Added ability to delete tasks via the `TaskUpdate` tool\n- Fixed session compaction issues that could cause resume to load full history instead of the compact summary\n- Fixed agents sometimes ignoring user messages sent while actively working on a task\n- Fixed wide character (emoji, CJK) rendering artifacts where trailing columns were not cleared when replaced by narrower characters\n- Fixed JSON parsing errors when MCP tool responses contain special Unicode characters\n- Fixed up/down arrow keys in multi-line and wrapped text input to prioritize cursor movement over history navigation\n- Fixed draft prompt being lost when pressing UP arrow to navigate command history\n- Fixed ghost text flickering when typing slash commands mid-input\n- Fixed marketplace source removal not properly deleting settings\n- Fixed duplicate output in some commands like `/context`\n- Fixed task list sometimes showing outside the main conversation view\n- Fixed syntax highlighting for diffs occurring within multiline constructs like Python docstrings\n- Fixed crashes when cancelling tool use\n- Improved `/sandbox` command UI to show dependency status with installation instructions when dependencies are missing\n- Improved thinking status text with a subtle shimmer animation\n- Improved task list to dynamically adjust visible items based on terminal height\n- Improved fork conversation hint to show how to resume the original session\n- Changed collapsed read/search groups to show present tense (\"Reading\", \"Searching for\") while in progress, and past tense (\"Read\", \"Searched for\") when complete\n- Changed teammate messages to render with rich Markdown formatting (bold, code blocks, lists, etc.) instead of plain text\n- Changed `ToolSearch` results to appear as a brief notification instead of inline in the conversation\n- Changed the `/commit-push-pr` skill to automatically post PR URLs to Slack channels when configured via MCP tools\n- Changed the `/copy` command to be available to all users\n- Changed background agents to prompt for tool permissions before launching\n- Changed permission rules like `Bash(*)` to be accepted and treated as equivalent to `Bash`\n- Changed config backups to be timestamped and rotated (keeping 5 most recent) to prevent data loss\n"
+    },
+    {
+      "version": "v2.1.19",
+      "name": "v2.1.19",
+      "publishedAt": "2026-01-23T21:56:32.000Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.19",
+      "features": [],
+      "rawBody": "## What's changed\n\n- Added env var `CLAUDE_CODE_ENABLE_TASKS`, set to `false` to keep the old system temporarily\n- Added shorthand `$0`, `$1`, etc. for accessing individual arguments in custom commands\n- Fixed crashes on processors without AVX instruction support\n- Fixed dangling Claude Code processes when terminal is closed by catching EIO errors from `process.exit()` and using SIGKILL as fallback\n- Fixed `/rename` and `/tag` not updating the correct session when resuming from a different directory (e.g., git worktrees)\n- Fixed resuming sessions by custom title not working when run from a different directory\n- Fixed pasted text content being lost when using prompt stash (Ctrl+S) and restore\n- Fixed agent list displaying \"Sonnet (default)\" instead of \"Inherit (default)\" for agents without an explicit model setting\n- Fixed backgrounded hook commands not returning early, potentially causing the session to wait on a process that was intentionally backgrounded\n- Fixed file write preview omitting empty lines\n- Changed skills without additional permissions or hooks to be allowed without requiring approval\n- Changed indexed argument syntax from `$ARGUMENTS.0` to `$ARGUMENTS[0]` (bracket syntax)\n- [SDK] Added replay of `queued_command` attachment messages as `SDKUserMessageReplay` events when `replayUserMessages` is enabled\n- [VSCode] Enabled session forking and rewind functionality for all users\n"
+    }
+  ],
+  "_metadata": {
+    "cachedAt": "2026-02-05T17:21:20.263Z",
+    "version": "1.0.0"
+  }
+}
