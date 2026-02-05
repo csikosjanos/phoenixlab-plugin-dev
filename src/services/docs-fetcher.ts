@@ -1,6 +1,7 @@
 export interface RawDocs {
-  html: string;
-  source: "official";
+  content: string;
+  source: "llms.txt";
+  url: string;
   fetchedAt: Date;
 }
 
@@ -25,7 +26,7 @@ export interface FetchAllResult {
   releases: Release[];
 }
 
-const OFFICIAL_DOCS_URL = "https://docs.anthropic.com/en/docs/claude-code";
+const OFFICIAL_DOCS_URL = "https://code.claude.com/docs/llms.txt";
 const GITHUB_RELEASES_URL = "https://api.github.com/repos/anthropics/claude-code/releases";
 const DEFAULT_RELEASE_LIMIT = 20;
 
@@ -41,11 +42,12 @@ export class DocsFetcher {
       throw new Error(`Failed to fetch official docs: ${response.status}`);
     }
 
-    const html = await response.text();
+    const content = await response.text();
 
     return {
-      html,
-      source: "official",
+      content,
+      source: "llms.txt",
+      url: OFFICIAL_DOCS_URL,
       fetchedAt: new Date(),
     };
   }

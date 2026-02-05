@@ -14,20 +14,21 @@ describe("DocsFetcher", () => {
   });
 
   describe("fetchOfficialDocs", () => {
-    it("should fetch docs from the official URL", async () => {
-      const mockHtml = "<html><body><h1>Claude Code</h1><p>Documentation content</p></body></html>";
+    it("should fetch docs from the llms.txt URL", async () => {
+      const mockContent = "# Claude Code\n\nDocumentation content";
       globalThis.fetch = mock(() =>
-        Promise.resolve(new Response(mockHtml, { status: 200 }))
+        Promise.resolve(new Response(mockContent, { status: 200 }))
       );
 
       const result = await fetcher.fetchOfficialDocs();
 
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        "https://docs.anthropic.com/en/docs/claude-code",
+        "https://code.claude.com/docs/llms.txt",
         expect.any(Object)
       );
-      expect(result.html).toBe(mockHtml);
-      expect(result.source).toBe("official");
+      expect(result.content).toBe(mockContent);
+      expect(result.source).toBe("llms.txt");
+      expect(result.url).toBe("https://code.claude.com/docs/llms.txt");
       expect(result.fetchedAt).toBeInstanceOf(Date);
     });
 
@@ -124,7 +125,7 @@ describe("DocsFetcher", () => {
 
   describe("fetchAll", () => {
     it("should fetch both docs and releases", async () => {
-      const mockHtml = "<html><body>Docs</body></html>";
+      const mockContent = "# Claude Code\n\nDocs content";
       const mockReleases = [
         {
           tag_name: "v1.0.0",
@@ -138,15 +139,15 @@ describe("DocsFetcher", () => {
       let callCount = 0;
       globalThis.fetch = mock((url: string) => {
         callCount++;
-        if (url.includes("docs.anthropic.com")) {
-          return Promise.resolve(new Response(mockHtml, { status: 200 }));
+        if (url.includes("code.claude.com")) {
+          return Promise.resolve(new Response(mockContent, { status: 200 }));
         }
         return Promise.resolve(new Response(JSON.stringify(mockReleases), { status: 200 }));
       });
 
       const result = await fetcher.fetchAll();
 
-      expect(result.docs.html).toBe(mockHtml);
+      expect(result.docs.content).toBe(mockContent);
       expect(result.releases).toHaveLength(1);
       expect(callCount).toBe(2);
     });

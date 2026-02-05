@@ -13,7 +13,8 @@ export interface Feature {
 
 export interface ParsedContent {
   title: string;
-  source: "official";
+  source: "llms.txt";
+  url: string;
   fetchedAt: Date;
   sections: Section[];
   rawText: string;
@@ -29,26 +30,28 @@ export interface ParsedRelease {
 }
 
 export class DocsParser {
-  parseHtml(rawDocs: RawDocs): ParsedContent {
-    const { html, source, fetchedAt } = rawDocs;
+  parseDocs(rawDocs: RawDocs): ParsedContent {
+    const { content, source, url, fetchedAt } = rawDocs;
 
-    if (!html.trim()) {
+    if (!content.trim()) {
       return {
         title: "",
         source,
+        url,
         fetchedAt,
         sections: [],
         rawText: "",
       };
     }
 
-    const title = this.extractTitle(html);
-    const sections = this.extractSections(html);
-    const rawText = this.stripHtml(html);
+    const title = this.extractTitle(content);
+    const sections = this.extractSections(content);
+    const rawText = content;
 
     return {
       title,
       source,
+      url,
       fetchedAt,
       sections,
       rawText,
@@ -94,6 +97,7 @@ export class DocsParser {
     lines.push(`# ${content.title}`);
     lines.push("");
     lines.push(`> Source: ${content.source}`);
+    lines.push(`> URL: ${content.url}`);
     lines.push(`> Fetched: ${content.fetchedAt.toISOString().split("T")[0]}`);
     lines.push("");
 
@@ -109,38 +113,33 @@ export class DocsParser {
     return lines.join("\n");
   }
 
-  private extractTitle(html: string): string {
-    // Try h1 first
-    const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+  private extractTitle(content: string): string {
+    // Match # Title at the start of a line
+    const h1Match = content.match(/^#\s+(.+)$/m);
     if (h1Match) {
       return h1Match[1].trim();
-    }
-
-    // Fall back to title tag
-    const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-    if (titleMatch) {
-      // Clean up title (often has " - Site Name" suffix)
-      return titleMatch[1].split(" - ")[0].trim();
     }
 
     return "";
   }
 
-  private extractSections(html: string): Section[] {
+  private extractSections(content: string): Section[] {
     const sections: Section[] = [];
+    const lines = content.split("\n");
 
-    // Match h2 and h3 headings with their content
-    const headingPattern = /<h([23])[^>]*>([^<]+)<\/h\1>/gi;
-    let match;
-    const headings: Array<{ level: number; title: string; index: number; endIndex: number }> = [];
+    // Find all h2 and h3 headings with their positions
+    const headings: Array<{ level: number; title: string; lineIndex: number }> = [];
 
-    while ((match = headingPattern.exec(html)) !== null) {
-      headings.push({
-        level: parseInt(match[1], 10),
-        title: match[2].trim(),
-        index: match.index,
-        endIndex: match.index + match[0].length,
-      });
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const h2Match = line.match(/^##\s+(.+)$/);
+      const h3Match = line.match(/^###\s+(.+)$/);
+
+      if (h2Match) {
+        headings.push({ level: 2, title: h2Match[1].trim(), lineIndex: i });
+      } else if (h3Match) {
+        headings.push({ level: 3, title: h3Match[1].trim(), lineIndex: i });
+      }
     }
 
     // Extract content between headings
@@ -148,41 +147,19 @@ export class DocsParser {
       const current = headings[i];
       const next = headings[i + 1];
 
-      const rawContent = html.slice(
-        current.endIndex,
-        next ? next.index : html.length
-      );
-      const content = this.stripHtml(rawContent).trim();
+      const startLine = current.lineIndex + 1;
+      const endLine = next ? next.lineIndex : lines.length;
+
+      const contentLines = lines.slice(startLine, endLine);
+      const sectionContent = contentLines.join("\n").trim();
 
       sections.push({
         title: current.title,
-        content,
+        content: sectionContent,
         level: current.level,
       });
     }
 
     return sections;
-  }
-
-  private stripHtml(html: string): string {
-    // Remove script and style tags with content
-    let text = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
-    text = text.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "");
-
-    // Remove HTML tags
-    text = text.replace(/<[^>]+>/g, " ");
-
-    // Decode common HTML entities
-    text = text.replace(/&nbsp;/g, " ");
-    text = text.replace(/&amp;/g, "&");
-    text = text.replace(/&lt;/g, "<");
-    text = text.replace(/&gt;/g, ">");
-    text = text.replace(/&quot;/g, '"');
-    text = text.replace(/&#39;/g, "'");
-
-    // Normalize whitespace
-    text = text.replace(/\s+/g, " ").trim();
-
-    return text;
   }
 }

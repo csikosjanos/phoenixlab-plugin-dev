@@ -134,6 +134,7 @@ export class CacheManager {
     lines.push(`# ${content.title}`);
     lines.push("");
     lines.push(`> Source: ${content.source}`);
+    lines.push(`> URL: ${content.url}`);
     lines.push(`> Last fetched: ${content.fetchedAt.toISOString().split("T")[0]}`);
     lines.push("");
 

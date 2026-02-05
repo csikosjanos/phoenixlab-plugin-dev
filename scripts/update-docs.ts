@@ -41,9 +41,9 @@ async function main() {
   // Fetch and parse official docs
   if (!skipDocs) {
     try {
-      console.log("Fetching official docs from docs.anthropic.com...");
+      console.log("Fetching official docs from code.claude.com/docs/llms.txt...");
       const rawDocs = await fetcher.fetchOfficialDocs();
-      parsedDocs = parser.parseHtml(rawDocs);
+      parsedDocs = parser.parseDocs(rawDocs);
       await cacheManager.writeDocsCache(parsedDocs);
       console.log(`  ✓ Fetched: ${parsedDocs.title}`);
       console.log(`  ✓ Found ${parsedDocs.sections.length} sections`);

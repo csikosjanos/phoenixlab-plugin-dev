@@ -14,96 +14,118 @@ describe("DocsParser", () => {
     parser = new DocsParser();
   });
 
-  describe("parseHtml", () => {
-    it("should extract title from HTML", () => {
-      const html = `
-        <html>
-          <head><title>Claude Code - Anthropic</title></head>
-          <body>
-            <h1>Claude Code</h1>
-            <p>Some content</p>
-          </body>
-        </html>
-      `;
+  describe("parseDocs", () => {
+    it("should extract title from markdown", () => {
+      const content = `# Claude Code
+
+Some content here.
+`;
       const rawDocs: RawDocs = {
-        html,
-        source: "official",
+        content,
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date("2024-01-15"),
       };
 
-      const result = parser.parseHtml(rawDocs);
+      const result = parser.parseDocs(rawDocs);
 
       expect(result.title).toBe("Claude Code");
-      expect(result.source).toBe("official");
+      expect(result.source).toBe("llms.txt");
+      expect(result.url).toBe("https://code.claude.com/docs/llms.txt");
       expect(result.fetchedAt).toEqual(new Date("2024-01-15"));
     });
 
     it("should extract sections from headings", () => {
-      const html = `
-        <html>
-          <body>
-            <h1>Claude Code</h1>
-            <h2>Getting Started</h2>
-            <p>Start content here.</p>
-            <h2>Features</h2>
-            <p>Features content here.</p>
-            <h3>Sub Feature</h3>
-            <p>Sub feature content.</p>
-          </body>
-        </html>
-      `;
+      const content = `# Claude Code
+
+## Getting Started
+
+Start content here.
+
+## Features
+
+Features content here.
+
+### Sub Feature
+
+Sub feature content.
+`;
       const rawDocs: RawDocs = {
-        html,
-        source: "official",
+        content,
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date(),
       };
 
-      const result = parser.parseHtml(rawDocs);
+      const result = parser.parseDocs(rawDocs);
 
       expect(result.sections.length).toBeGreaterThanOrEqual(2);
       expect(result.sections.some((s) => s.title === "Getting Started")).toBe(true);
       expect(result.sections.some((s) => s.title === "Features")).toBe(true);
     });
 
-    it("should extract text content stripping HTML tags", () => {
-      const html = `
-        <html>
-          <body>
-            <h1>Claude Code</h1>
-            <p>This is <strong>bold</strong> and <em>italic</em> text.</p>
-            <ul>
-              <li>Item 1</li>
-              <li>Item 2</li>
-            </ul>
-          </body>
-        </html>
-      `;
+    it("should preserve raw text content", () => {
+      const content = `# Claude Code
+
+This is **bold** and *italic* text.
+
+- Item 1
+- Item 2
+`;
       const rawDocs: RawDocs = {
-        html,
-        source: "official",
+        content,
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date(),
       };
 
-      const result = parser.parseHtml(rawDocs);
+      const result = parser.parseDocs(rawDocs);
 
-      expect(result.rawText).toContain("This is bold and italic text");
+      expect(result.rawText).toContain("This is **bold** and *italic* text");
       expect(result.rawText).toContain("Item 1");
       expect(result.rawText).toContain("Item 2");
     });
 
-    it("should handle empty HTML gracefully", () => {
-      const html = "";
+    it("should handle empty content gracefully", () => {
+      const content = "";
       const rawDocs: RawDocs = {
-        html,
-        source: "official",
+        content,
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date(),
       };
 
-      const result = parser.parseHtml(rawDocs);
+      const result = parser.parseDocs(rawDocs);
 
       expect(result.title).toBe("");
       expect(result.sections).toEqual([]);
       expect(result.rawText).toBe("");
+    });
+
+    it("should extract section content between headings", () => {
+      const content = `# Claude Code
+
+## Installation
+
+Run npm install to get started.
+
+## Usage
+
+Import and use the module.
+`;
+      const rawDocs: RawDocs = {
+        content,
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
+        fetchedAt: new Date(),
+      };
+
+      const result = parser.parseDocs(rawDocs);
+
+      const installSection = result.sections.find((s) => s.title === "Installation");
+      expect(installSection).toBeDefined();
+      expect(installSection!.content).toContain("Run npm install");
+      expect(installSection!.level).toBe(2);
     });
   });
 
@@ -207,7 +229,8 @@ describe("DocsParser", () => {
     it("should generate markdown from parsed content", () => {
       const content: ParsedContent = {
         title: "Claude Code",
-        source: "official",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date("2024-01-15T12:00:00Z"),
         sections: [
           { title: "Getting Started", content: "Start here", level: 2 },
@@ -225,10 +248,11 @@ describe("DocsParser", () => {
       expect(markdown).toContain("Feature list");
     });
 
-    it("should include metadata header", () => {
+    it("should include metadata header with URL", () => {
       const content: ParsedContent = {
         title: "Claude Code",
-        source: "official",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date("2024-01-15T12:00:00Z"),
         sections: [],
         rawText: "",
@@ -236,7 +260,8 @@ describe("DocsParser", () => {
 
       const markdown = parser.generateMarkdown(content);
 
-      expect(markdown).toContain("Source: official");
+      expect(markdown).toContain("Source: llms.txt");
+      expect(markdown).toContain("https://code.claude.com/docs/llms.txt");
       expect(markdown).toContain("2024-01-15");
     });
   });

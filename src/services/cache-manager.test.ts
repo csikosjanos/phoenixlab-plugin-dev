@@ -24,7 +24,8 @@ describe("CacheManager", () => {
     it("should write parsed content to cache file", async () => {
       const content: ParsedContent = {
         title: "Claude Code",
-        source: "official",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date("2024-01-15T12:00:00Z"),
         sections: [{ title: "Features", content: "Feature list", level: 2 }],
         rawText: "Full text",
@@ -43,7 +44,8 @@ describe("CacheManager", () => {
     it("should include cache metadata", async () => {
       const content: ParsedContent = {
         title: "Claude Code",
-        source: "official",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date("2024-01-15T12:00:00Z"),
         sections: [],
         rawText: "",
@@ -86,7 +88,8 @@ describe("CacheManager", () => {
     it("should read cached docs", async () => {
       const content: ParsedContent = {
         title: "Claude Code",
-        source: "official",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date("2024-01-15T12:00:00Z"),
         sections: [],
         rawText: "",
@@ -137,7 +140,8 @@ describe("CacheManager", () => {
     it("should generate markdown reference files", async () => {
       const content: ParsedContent = {
         title: "Claude Code",
-        source: "official",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date("2024-01-15T12:00:00Z"),
         sections: [
           { title: "Getting Started", content: "Start here", level: 2 },
@@ -172,6 +176,23 @@ describe("CacheManager", () => {
       expect(releasesContent).toContain("v1.0.0");
       expect(releasesContent).toContain("Feature A");
     });
+
+    it("should include URL in generated docs markdown", async () => {
+      const content: ParsedContent = {
+        title: "Claude Code",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
+        fetchedAt: new Date("2024-01-15T12:00:00Z"),
+        sections: [],
+        rawText: "",
+      };
+
+      await cacheManager.generateReferences(content, []);
+
+      const docsRefFile = join(testReferencesDir, "official-docs.md");
+      const docsContent = await readFile(docsRefFile, "utf-8");
+      expect(docsContent).toContain("https://code.claude.com/docs/llms.txt");
+    });
   });
 
   describe("isCacheValid", () => {
@@ -184,7 +205,8 @@ describe("CacheManager", () => {
     it("should return true if cache is recent", async () => {
       const content: ParsedContent = {
         title: "Claude Code",
-        source: "official",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date(),
         sections: [],
         rawText: "",
@@ -199,7 +221,8 @@ describe("CacheManager", () => {
     it("should return false if cache is stale", async () => {
       const content: ParsedContent = {
         title: "Claude Code",
-        source: "official",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date(),
         sections: [],
         rawText: "",
@@ -223,7 +246,8 @@ describe("CacheManager", () => {
     it("should return metadata from cache", async () => {
       const content: ParsedContent = {
         title: "Claude Code",
-        source: "official",
+        source: "llms.txt",
+        url: "https://code.claude.com/docs/llms.txt",
         fetchedAt: new Date("2024-01-15T12:00:00Z"),
         sections: [],
         rawText: "",
